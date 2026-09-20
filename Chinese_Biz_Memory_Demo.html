@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chinese Biz Memory</title>
+<style>
+body{font-family:Arial,"Noto Sans Thai",sans-serif;background:#f7f4ef;margin:0;color:#222}
+.container{max-width:900px;margin:30px auto;padding:20px}
+.header{background:#b91c1c;color:white;border-radius:22px;padding:28px;text-align:center}
+.header h1{margin:0;font-size:34px}.header p{margin:8px 0 0}
+.card{background:white;border-radius:18px;padding:22px;margin:18px 0;box-shadow:0 4px 16px #00000012}
+input,button,select{font-size:17px;padding:12px;border-radius:10px;border:1px solid #ccc}
+input{width:60%}button{cursor:pointer;background:#b91c1c;color:white;border:0;margin-left:6px}
+.word{font-size:42px;font-weight:bold;color:#b91c1c}.pinyin{font-size:22px}.meaning{font-size:24px}
+.example{background:#fff7ed;padding:15px;border-radius:12px;margin-top:12px}
+.options button{display:block;width:100%;margin:8px 0;background:#eee;color:#222;text-align:left}
+.options button:hover{background:#fee2e2}
+.tag{display:inline-block;background:#fee2e2;padding:6px 10px;border-radius:999px;margin:3px}
+.footer{text-align:center;color:#777;font-size:14px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🇨🇳 Chinese Biz Memory</h1>
+    <p>ผู้ช่วยจำศัพท์จีนธุรกิจด้วย AI</p>
+  </div>
+
+  <div class="card">
+    <h2>🔍 1. ใส่คำศัพท์</h2>
+    <input id="wordInput" placeholder="เช่น 客户, 订单, 市场">
+    <button onclick="learnWord()">เรียนรู้</button>
+    <div id="result" class="hidden"></div>
+  </div>
+
+  <div class="card">
+    <h2>📚 2. คำศัพท์ตัวอย่าง</h2>
+    <span class="tag">客户</span><span class="tag">订单</span><span class="tag">市场</span>
+    <span class="tag">销售</span><span class="tag">合同</span><span class="tag">价格</span>
+    <span class="tag">公司</span><span class="tag">产品</span><span class="tag">合作</span><span class="tag">利润</span>
+  </div>
+
+  <div class="card">
+    <h2>📝 3. แบบทดสอบ</h2>
+    <div id="quiz"></div>
+  </div>
+
+  <div class="card">
+    <h2>🤖 4. กระบวนการ AI</h2>
+    <p><b>Input</b> → คำศัพท์ภาษาจีน</p>
+    <p><b>Process</b> → AI วิเคราะห์ความหมาย + สร้างตัวอย่าง + สร้างแบบทดสอบ</p>
+    <p><b>Output</b> → บัตรคำศัพท์ + ประโยค + แบบทดสอบ + คำแนะนำทบทวน</p>
+  </div>
+
+  <div class="footer">Final Project: Digital Innovation Challenge | Business Chinese</div>
+</div>
+
+<script>
+const data={
+"客户":{p:"kèhù",m:"ลูกค้า",e:"我们要了解客户的需求。",ep:"Wǒmen yào liǎojiě kèhù de xūqiú.",et:"เราต้องเข้าใจความต้องการของลูกค้า",q:"客户 หมายถึงอะไร?",a:["สินค้า","ลูกค้า","ราคา","ตลาด"],c:1},
+"订单":{p:"dìngdān",m:"คำสั่งซื้อ",e:"客户已经确认订单。",ep:"Kèhù yǐjīng quèrèn dìngdān.",et:"ลูกค้าได้ยืนยันคำสั่งซื้อแล้ว",q:"订单 หมายถึงอะไร?",a:["คำสั่งซื้อ","กำไร","บริษัท","สัญญา"],c:0},
+"市场":{p:"shìchǎng",m:"ตลาด",e:"公司正在开发新的市场。",ep:"Gōngsī zhèngzài kāifā xīn de shìchǎng.",et:"บริษัทกำลังพัฒนาตลาดใหม่",q:"市场 หมายถึงอะไร?",a:["สินค้า","ลูกค้า","ตลาด","การขาย"],c:2},
+"销售":{p:"xiāoshòu",m:"การขาย",e:"他的工作是负责销售。",ep:"Tā de gōngzuò shì fùzé xiāoshòu.",et:"งานของเขาคือรับผิดชอบด้านการขาย",q:"销售 หมายถึงอะไร?",a:["การขาย","การผลิต","ราคา","ความร่วมมือ"],c:0},
+"合同":{p:"hétóng",m:"สัญญา",e:"双方签订了合同。",ep:"Shuāngfāng qiāndìng le hétóng.",et:"ทั้งสองฝ่ายได้ลงนามในสัญญา",q:"合同 หมายถึงอะไร?",a:["สัญญา","ตลาด","ลูกค้า","สินค้า"],c:0},
+"价格":{p:"jiàgé",m:"ราคา",e:"这个产品的价格很合理。",ep:"Zhège chǎnpǐn de jiàgé hěn hélǐ.",et:"ราคาของสินค้านี้สมเหตุสมผล",q:"价格 หมายถึงอะไร?",a:["กำไร","ราคา","บริษัท","คำสั่งซื้อ"],c:1},
+"公司":{p:"gōngsī",m:"บริษัท",e:"这家公司有很多员工。",ep:"Zhè jiā gōngsī yǒu hěn duō yuángōng.",et:"บริษัทนี้มีพนักงานจำนวนมาก",q:"公司 หมายถึงอะไร?",a:["บริษัท","ตลาด","สัญญา","การขาย"],c:0},
+"产品":{p:"chǎnpǐn",m:"สินค้า/ผลิตภัณฑ์",e:"我们的产品质量很好。",ep:"Wǒmen de chǎnpǐn zhìliàng hěn hǎo.",et:"สินค้าของเรามีคุณภาพดี",q:"产品 หมายถึงอะไร?",a:["สินค้า/ผลิตภัณฑ์","ลูกค้า","ราคา","กำไร"],c:0},
+"合作":{p:"hézuò",m:"ความร่วมมือ",e:"两家公司希望合作。",ep:"Liǎng jiā gōngsī xīwàng hézuò.",et:"บริษัทสองแห่งต้องการร่วมมือกัน",q:"合作 หมายถึงอะไร?",a:["การแข่งขัน","ความร่วมมือ","คำสั่งซื้อ","ตลาด"],c:1},
+"利润":{p:"lìrùn",m:"กำไร",e:"公司今年的利润增加了。",ep:"Gōngsī jīnnián de lìrùn zēngjiā le.",et:"กำไรของบริษัทเพิ่มขึ้นในปีนี้",q:"利润 หมายถึงอะไร?",a:["กำไร","ราคา","สินค้า","ลูกค้า"],c:0}
+};
+
+function learnWord(){
+ const w=document.getElementById("wordInput").value.trim();
+ const d=data[w];
+ const r=document.getElementById("result");
+ if(!d){r.className="";r.innerHTML="<p>ยังไม่มีคำนี้ในชุด Demo ลองใช้: 客户, 订单, 市场, 销售, 合同, 价格, 公司, 产品, 合作 หรือ 利润</p>";return;}
+ r.className="";
+ r.innerHTML=`<div class="word">${w}</div><div class="pinyin">${d.p}</div><div class="meaning">${d.m}</div>
+ <div class="example"><b>ตัวอย่างประโยค</b><br>${d.e}<br>${d.ep}<br>${d.et}</div>`;
+ showQuiz(d);
+}
+function showQuiz(d){
+ const q=document.getElementById("quiz");
+ q.innerHTML=`<p><b>${d.q}</b></p><div class="options">${d.a.map((x,i)=>`<button onclick="answer(${i},${d.c},this)">${String.fromCharCode(65+i)}. ${x}</button>`).join("")}</div><p id="feedback"></p>`;
+}
+function answer(i,c,el){
+ const f=document.getElementById("feedback");
+ if(i===c){f.innerHTML="✅ ถูกต้อง! คำนี้ควรเก็บไว้ทบทวนต่อ";}else{f.innerHTML="❌ ยังไม่ถูก ลองทบทวนคำศัพท์แล้วตอบใหม่";}}
+</script>
+</body>
+</html>
